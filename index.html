@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planika — Prenez soin de votre rythme naturel</title>
+  <meta name="description" content="Planika vous aide à suivre votre cycle, cuisiner sainement et vous réveiller en douceur, grâce à votre compagnon végétal le Terramorphe." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── Design Tokens ─────────────────────────────────────────────────────── */
+    :root {
+      --cream:       #FFF9F0;
+      --cream-deep:  #F5EBD8;
+      --terracotta:  #E2725B;
+      --terra-light: #F0A898;
+      --terra-dark:  #C4553F;
+      --sage:        #5F7A61;
+      --sage-light:  #8AAD8C;
+      --sage-dark:   #3E5740;
+      --ink:         #2A2118;
+      --ink-soft:    #5C4D3A;
+      --white:       #FFFFFF;
+
+      --ff-display: 'Playfair Display', Georgia, serif;
+      --ff-body:    'DM Sans', system-ui, sans-serif;
+
+      --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+      --ease-spring:    cubic-bezier(0.34, 1.56, 0.64, 1);
+
+      --nav-h: 68px;
+    }
+
+    /* ─── Reset & Base ──────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--ff-body);
+      background: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { display: block; max-width: 100%; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ─── Scroll Animations ─────────────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s var(--ease-out-quart), transform 0.7s var(--ease-out-quart);
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-40px);
+      transition: opacity 0.7s var(--ease-out-quart), transform 0.7s var(--ease-out-quart);
+    }
+    .reveal-left.visible { opacity: 1; transform: none; }
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(40px);
+      transition: opacity 0.7s var(--ease-out-quart), transform 0.7s var(--ease-out-quart);
+    }
+    .reveal-right.visible { opacity: 1; transform: none; }
+
+    /* ─── Navigation ────────────────────────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 clamp(20px, 5vw, 64px);
+      z-index: 100;
+      transition: background 0.4s ease, box-shadow 0.4s ease;
+    }
+    .nav.scrolled {
+      background: rgba(255, 249, 240, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 1px 0 rgba(0,0,0,0.06);
+    }
+    .nav-logo {
+      font-family: var(--ff-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .nav-logo-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--terracotta);
+      flex-shrink: 0;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--ink-soft);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--terracotta); }
+    .nav-cta {
+      background: var(--terracotta);
+      color: var(--white) !important;
+      padding: 10px 22px;
+      border-radius: 100px;
+      font-size: 0.875rem !important;
+      font-weight: 500 !important;
+      transition: background 0.2s, transform 0.15s !important;
+    }
+    .nav-cta:hover { background: var(--terra-dark) !important; transform: translateY(-1px); }
+    .nav-burger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 6px;
+      border: none;
+      background: none;
+    }
+    .nav-burger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--ink);
+      border-radius: 2px;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    .nav-burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-burger.open span:nth-child(2) { opacity: 0; }
+    .nav-burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: var(--nav-h); left: 0; right: 0;
+      background: var(--cream);
+      border-top: 1px solid var(--cream-deep);
+      padding: 24px clamp(20px, 5vw, 40px);
+      flex-direction: column;
+      gap: 20px;
+      z-index: 99;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--ink);
+      padding: 8px 0;
+      border-bottom: 1px solid var(--cream-deep);
+    }
+
+    /* ─── Hero ──────────────────────────────────────────────────────────────── */
+    .hero {
+      min-height: 100svh;
+      padding: var(--nav-h) clamp(20px, 5vw, 64px) 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 40px;
+      max-width: 1280px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .hero::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 70% 40%, rgba(95,122,97,0.08) 0%, transparent 60%),
+                  radial-gradient(ellipse 50% 40% at 20% 80%, rgba(226,114,91,0.06) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: -1;
+    }
+    .hero-content { padding-bottom: clamp(40px, 8vh, 100px); }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--sage);
+      margin-bottom: 24px;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 24px; height: 1.5px;
+      background: var(--sage);
+    }
+    .hero-title {
+      font-family: var(--ff-display);
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 24px;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--terracotta);
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 1.5vw, 1.125rem);
+      line-height: 1.7;
+      color: var(--ink-soft);
+      max-width: 44ch;
+      margin-bottom: 40px;
+      font-weight: 300;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .btn-store {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 24px;
+      border-radius: 14px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: transform 0.2s var(--ease-spring), box-shadow 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-store:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+    .btn-store-apple {
+      background: var(--ink);
+      color: var(--white);
+    }
+    .btn-store-google {
+      background: var(--white);
+      color: var(--ink);
+      border: 1.5px solid rgba(0,0,0,0.1);
+    }
+    .btn-store-label { display: flex; flex-direction: column; text-align: left; }
+    .btn-store-label small { font-size: 0.7rem; font-weight: 300; opacity: 0.8; }
+    .btn-store-label strong { font-size: 0.925rem; }
+
+    /* ─── Hero Visual ───────────────────────────────────────────────────────── */
+    .hero-visual {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      padding-bottom: clamp(20px, 5vh, 60px);
+      position: relative;
+    }
+    .hero-phone-frame {
+      width: clamp(220px, 26vw, 320px);
+      aspect-ratio: 9/19;
+      background: var(--ink);
+      border-radius: 44px;
+      position: relative;
+      box-shadow: 0 40px 80px rgba(42,33,24,0.25), 0 0 0 1.5px rgba(255,255,255,0.08) inset;
+      overflow: hidden;
+      z-index: 2;
+    }
+    .phone-screen {
+      position: absolute;
+      inset: 6px;
+      border-radius: 38px;
+      background: var(--cream);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .phone-statusbar {
+      height: 36px;
+      background: var(--cream-deep);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      font-size: 0.6rem;
+      color: var(--ink-soft);
+      font-weight: 500;
+    }
+    .phone-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 16px;
+      background: linear-gradient(180deg, var(--cream) 0%, #EEF5EE 100%);
+    }
+    .phone-app-title {
+      font-family: var(--ff-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .phone-monster-area {
+      width: 120px;
+      height: 120px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .phone-soil {
+      position: absolute;
+      bottom: 0;
+      width: 90px;
+      height: 28px;
+      background: var(--terra-dark);
+      border-radius: 50%;
+      opacity: 0.7;
+    }
+    .phone-pot {
+      position: absolute;
+      bottom: 0;
+      width: 54px;
+      height: 38px;
+      background: var(--terracotta);
+      clip-path: polygon(8% 0%, 92% 0%, 82% 100%, 18% 100%);
+      z-index: 1;
+    }
+    .phone-plant-body {
+      position: absolute;
+      bottom: 30px;
+      width: 48px;
+      height: 60px;
+      z-index: 2;
+    }
+    .phone-xp-bar {
+      width: 100%;
+      background: var(--cream-deep);
+      border-radius: 8px;
+      height: 8px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .phone-xp-fill {
+      height: 100%;
+      width: 68%;
+      background: linear-gradient(90deg, var(--sage), var(--sage-light));
+      border-radius: 8px;
+      animation: xp-pulse 3s ease-in-out infinite;
+    }
+    @keyframes xp-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    .phone-stats {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+    .phone-stat {
+      flex: 1;
+      background: var(--white);
+      border-radius: 10px;
+      padding: 8px;
+      text-align: center;
+      font-size: 0.55rem;
+      color: var(--ink-soft);
+    }
+    .phone-stat strong {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+    .phone-nav {
+      height: 52px;
+      background: var(--white);
+      border-top: 1px solid var(--cream-deep);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 8px;
+    }
+    .phone-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 0.5rem;
+      color: var(--ink-soft);
+    }
+    .phone-nav-item.active { color: var(--terracotta); }
+    .phone-nav-icon { font-size: 1rem; }
+
+    /* Floating decorative cards */
+    .hero-float-card {
+      position: absolute;
+      background: var(--white);
+      border-radius: 16px;
+      padding: 12px 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+      font-size: 0.78rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 500;
+      color: var(--ink);
+      animation: float 5s ease-in-out infinite;
+    }
+    .hero-float-card:nth-child(2) { animation-delay: -2s; }
+    .hero-float-card:nth-child(3) { animation-delay: -3.5s; }
+    .float-card-1 {
+      right: -10px;
+      top: 15%;
+      animation-name: float;
+    }
+    .float-card-2 {
+      left: -20px;
+      bottom: 28%;
+    }
+    .float-card-3 {
+      right: 5%;
+      bottom: 18%;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .float-icon {
+      width: 32px; height: 32px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .float-sage { background: rgba(95,122,97,0.15); }
+    .float-terra { background: rgba(226,114,91,0.15); }
+    .float-ink { background: rgba(42,33,24,0.08); }
+
+    /* Terramorphe SVG inline */
+    .terra-svg { width: 100%; height: 100%; }
+
+    /* ─── Section Base ──────────────────────────────────────────────────────── */
+    section { padding: clamp(64px, 10vw, 120px) clamp(20px, 5vw, 64px); }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .section-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--terracotta);
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: var(--ff-display);
+      font-size: clamp(1.8rem, 3.5vw, 2.75rem);
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -0.015em;
+      color: var(--ink);
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      font-size: 1.0625rem;
+      color: var(--ink-soft);
+      line-height: 1.7;
+      max-width: 52ch;
+      font-weight: 300;
+    }
+
+    /* ─── Features Section ──────────────────────────────────────────────────── */
+    .features-section {
+      background: var(--cream);
+    }
+    .features-header {
+      margin-bottom: clamp(40px, 6vw, 72px);
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .feature-card {
+      background: var(--white);
+      border-radius: 24px;
+      padding: clamp(28px, 3vw, 40px);
+      border: 1.5px solid rgba(0,0,0,0.05);
+      transition: transform 0.3s var(--ease-spring), box-shadow 0.3s;
+      cursor: default;
+    }
+    .feature-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 48px rgba(0,0,0,0.09);
+    }
+    .feature-icon-wrap {
+      width: 60px; height: 60px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      margin-bottom: 24px;
+    }
+    .fi-sage { background: rgba(95,122,97,0.12); }
+    .fi-terra { background: rgba(226,114,91,0.12); }
+    .fi-cream { background: var(--cream-deep); }
+    .feature-card-title {
+      font-family: var(--ff-display);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 12px;
+      line-height: 1.25;
+    }
+    .feature-card-desc {
+      font-size: 0.9375rem;
+      color: var(--ink-soft);
+      line-height: 1.65;
+      font-weight: 300;
+    }
+    .feature-card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .feature-tag {
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 5px 12px;
+      border-radius: 100px;
+      letter-spacing: 0.03em;
+    }
+    .tag-sage { background: rgba(95,122,97,0.12); color: var(--sage-dark); }
+    .tag-terra { background: rgba(226,114,91,0.12); color: var(--terra-dark); }
+    .tag-ink { background: rgba(42,33,24,0.07); color: var(--ink-soft); }
+
+    /* ─── Terramorphe Section ───────────────────────────────────────────────── */
+    .terra-section {
+      background: var(--ink);
+      overflow: hidden;
+      position: relative;
+    }
+    .terra-section::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(95,122,97,0.15) 0%, transparent 70%);
+      top: -200px; right: -100px;
+      pointer-events: none;
+    }
+    .terra-section::after {
+      content: '';
+      position: absolute;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(226,114,91,0.1) 0%, transparent 70%);
+      bottom: -100px; left: 0;
+      pointer-events: none;
+    }
+    .terra-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(40px, 6vw, 80px);
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+    .terra-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .terra-creature-container {
+      width: clamp(200px, 28vw, 340px);
+      aspect-ratio: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .terra-glow {
+      position: absolute;
+      inset: -20px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(95,122,97,0.25) 0%, transparent 70%);
+      animation: glow-pulse 4s ease-in-out infinite;
+    }
+    @keyframes glow-pulse {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.1); }
+    }
+    .terra-content .section-eyebrow { color: var(--sage-light); }
+    .terra-content .section-title { color: var(--white); }
+    .terra-content .section-sub { color: rgba(255,255,255,0.6); max-width: none; margin-bottom: 36px; }
+    .terra-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .terra-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 18px 20px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      transition: background 0.25s, border-color 0.25s;
+    }
+    .terra-step:hover {
+      background: rgba(255,255,255,0.09);
+      border-color: rgba(255,255,255,0.15);
+    }
+    .terra-step-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      background: rgba(95,122,97,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .terra-step-text strong {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+    .terra-step-text p {
+      font-size: 0.825rem;
+      color: rgba(255,255,255,0.5);
+      font-weight: 300;
+      line-height: 1.5;
+    }
+
+    /* ─── Evolution Strip ───────────────────────────────────────────────────── */
+    .evolution-strip {
+      background: var(--cream-deep);
+      padding: clamp(40px, 6vw, 60px) clamp(20px, 5vw, 64px);
+    }
+    .evolution-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .evolution-title {
+      font-family: var(--ff-display);
+      font-size: clamp(1.2rem, 2vw, 1.5rem);
+      font-weight: 600;
+      text-align: center;
+      color: var(--ink);
+      margin-bottom: 40px;
+    }
+    .evolution-stages {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(8px, 2vw, 24px);
+      flex-wrap: wrap;
+    }
+    .evo-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .evo-plant {
+      width: clamp(70px, 9vw, 110px);
+      height: clamp(70px, 9vw, 110px);
+      background: var(--white);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      transition: transform 0.3s var(--ease-spring);
+      cursor: default;
+    }
+    .evo-plant:hover { transform: scale(1.1); }
+    .evo-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--ink-soft);
+      text-align: center;
+    }
+    .evo-arrow {
+      font-size: 1.25rem;
+      color: var(--sage-light);
+      flex-shrink: 0;
+    }
+    .evo-stage.highlighted .evo-plant {
+      background: linear-gradient(135deg, rgba(95,122,97,0.15), rgba(226,114,91,0.1));
+      box-shadow: 0 8px 28px rgba(95,122,97,0.2);
+      transform: scale(1.08);
+    }
+
+    /* ─── Download CTA ──────────────────────────────────────────────────────── */
+    .cta-section {
+      background: var(--terracotta);
+      padding: clamp(60px, 10vw, 100px) clamp(20px, 5vw, 64px);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.1);
+      top: -300px; left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+    .cta-section::after {
+      content: '';
+      position: absolute;
+      width: 500px; height: 500px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.07);
+      bottom: -250px; left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+    .cta-inner { max-width: 680px; margin: 0 auto; position: relative; z-index: 1; }
+    .cta-section .section-title {
+      color: var(--white);
+      margin-bottom: 16px;
+    }
+    .cta-section .section-sub {
+      color: rgba(255,255,255,0.75);
+      margin: 0 auto 40px;
+    }
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .cta-btn-apple {
+      background: var(--white);
+      color: var(--ink);
+    }
+    .cta-btn-google {
+      background: rgba(255,255,255,0.15);
+      color: var(--white);
+      border: 1.5px solid rgba(255,255,255,0.3);
+    }
+    .cta-btn-google:hover { background: rgba(255,255,255,0.22); }
+
+    /* ─── Footer ────────────────────────────────────────────────────────────── */
+    .footer {
+      background: var(--ink);
+      color: rgba(255,255,255,0.5);
+      padding: clamp(48px, 6vw, 72px) clamp(20px, 5vw, 64px) clamp(28px, 4vw, 40px);
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr;
+      gap: 48px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 32px;
+    }
+    .footer-brand { }
+    .footer-brand-name {
+      font-family: var(--ff-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+    .footer-brand-desc {
+      font-size: 0.875rem;
+      line-height: 1.65;
+      color: rgba(255,255,255,0.4);
+      font-weight: 300;
+      max-width: 30ch;
+      margin-bottom: 20px;
+    }
+    .footer-contact-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--terra-light);
+      transition: color 0.2s;
+      border-bottom: 1px solid rgba(226,114,91,0.3);
+      padding-bottom: 2px;
+    }
+    .footer-contact-link:hover { color: var(--white); border-color: var(--white); }
+    .footer-col-title {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 20px;
+    }
+    .footer-col-links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      list-style: none;
+    }
+    .footer-col-links a {
+      font-size: 0.875rem;
+      color: rgba(255,255,255,0.45);
+      transition: color 0.2s;
+    }
+    .footer-col-links a:hover { color: var(--white); }
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-legal {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.3);
+    }
+    .footer-legal a { color: rgba(255,255,255,0.4); transition: color 0.2s; }
+    .footer-legal a:hover { color: rgba(255,255,255,0.7); }
+    .footer-made {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.25);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .footer-made span { color: var(--terracotta); }
+
+    /* ─── Responsive ────────────────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding-top: calc(var(--nav-h) + 24px);
+      }
+      .hero-eyebrow { margin: 0 auto 20px; }
+      .hero-sub { margin: 0 auto 32px; }
+      .hero-actions { justify-content: center; }
+      .hero-visual { order: -1; padding-top: 0; padding-bottom: 20px; }
+      .float-card-1, .float-card-2, .float-card-3 { display: none; }
+      .hero-phone-frame { width: clamp(160px, 38vw, 220px); }
+
+      .features-grid { grid-template-columns: 1fr; gap: 20px; }
+
+      .terra-inner { grid-template-columns: 1fr; text-align: center; }
+      .terra-visual { margin-bottom: 8px; }
+      .terra-creature-container { width: clamp(180px, 45vw, 260px); }
+
+      .footer-top { grid-template-columns: 1fr; gap: 36px; }
+      .footer-brand-desc { max-width: none; }
+
+      .nav-links { display: none; }
+      .nav-burger { display: flex; }
+    }
+    @media (max-width: 600px) {
+      .evolution-stages { gap: 8px; }
+      .evo-plant { width: 68px; height: 68px; font-size: 1.7rem; }
+      .evo-arrow { font-size: 1rem; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; }
+    }
+
+    /* ─── Micro-interaction: ripple on store buttons ───────────────────────── */
+    .btn-store { position: relative; overflow: hidden; }
+    .btn-store::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.12);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .btn-store:active::after { opacity: 1; }
+
+    /* ─── Scrollbar ─────────────────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--cream); }
+    ::-webkit-scrollbar-thumb { background: var(--sage-light); border-radius: 3px; }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal, .reveal-left, .reveal-right { transition: none !important; opacity: 1 !important; transform: none !important; }
+      .hero-float-card, .terra-glow, .phone-xp-fill { animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── Navigation ─────────────────────────────────────────────────────────── -->
+  <nav class="nav" id="mainNav">
+    <a class="nav-logo" href="#" aria-label="Accueil Planika">
+      <span class="nav-logo-dot"></span>
+      Planika
+    </a>
+    <ul class="nav-links" role="list">
+      <li><a href="#modules">L'application</a></li>
+      <li><a href="#terramorphe">Le Terramorphe</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="#telechargement" class="nav-cta">Télécharger</a></li>
+    </ul>
+    <button class="nav-burger" id="burgerBtn" aria-label="Ouvrir le menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu" role="navigation" aria-label="Menu mobile">
+    <a href="#modules" class="mobile-link">L'application</a>
+    <a href="#terramorphe" class="mobile-link">Le Terramorphe</a>
+    <a href="#contact" class="mobile-link">Contact</a>
+    <a href="#telechargement" class="mobile-link" style="color:var(--terracotta);font-weight:600;">Télécharger gratuitement</a>
+  </div>
+
+  <!-- ─── Hero ───────────────────────────────────────────────────────────────── -->
+  <header class="hero" id="hero">
+    <div class="hero-content">
+      <p class="hero-eyebrow reveal">Votre compagnon de bien-être</p>
+      <h1 class="hero-title reveal reveal-delay-1">
+        Prenez soin de votre<br><em>rythme naturel.</em>
+      </h1>
+      <p class="hero-sub reveal reveal-delay-2">
+        Suivez votre cycle, cuisinez sainement et réveillez-vous en douceur. Chaque soin que vous apportez à votre corps fait grandir votre compagnon virtuel, le Terramorphe.
+      </p>
+      <div class="hero-actions reveal reveal-delay-3">
+        <a href="#telechargement" class="btn-store btn-store-apple" role="button" aria-label="Télécharger sur l'App Store">
+          <!-- Apple Logo SVG -->
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+            <path d="M16.115 11.695c-.02-2.274 1.86-3.378 1.944-3.432-1.062-1.551-2.712-1.763-3.295-1.786-1.398-.142-2.737.828-3.448.828-.71 0-1.804-.808-2.97-.786-1.524.022-2.934.888-3.718 2.252-1.59 2.754-.408 6.826 1.137 9.061.757 1.089 1.657 2.313 2.836 2.27 1.14-.045 1.568-.734 2.947-.734 1.378 0 1.773.734 2.977.712 1.225-.02 1.997-1.107 2.748-2.2.866-1.258 1.222-2.483 1.24-2.546-.027-.012-2.374-.91-2.398-3.639z" fill="currentColor"/>
+            <path d="M13.99 4.856c.63-.763 1.055-1.822.938-2.876-.908.037-2.007.604-2.658 1.367-.584.674-1.096 1.753-.959 2.786 1.012.079 2.048-.514 2.679-1.277z" fill="currentColor"/>
+          </svg>
+          <span class="btn-store-label">
+            <small>Télécharger dans</small>
+            <strong>l'App Store</strong>
+          </span>
+        </a>
+        <a href="#telechargement" class="btn-store btn-store-google" role="button" aria-label="Disponible sur Google Play">
+          <!-- Google Play Logo SVG -->
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+            <path d="M4.6 2.5c-.34.36-.54.91-.54 1.62v13.76c0 .71.2 1.26.54 1.62l.08.08 7.7-7.7v-.18L4.68 2.42l-.08.08z" fill="#4FC3F7"/>
+            <path d="M14.94 13.44l-2.56-2.56v-.18l2.56-2.56.06.03 3.03 1.72c.87.49.87 1.3 0 1.8l-3.03 1.72-.06.03z" fill="#FFCA28"/>
+            <path d="M15 13.47L12.38 10.84 4.6 18.62c.28.3.74.34 1.26.04L15 13.47z" fill="#F06292"/>
+            <path d="M15 8.53L5.86 3.34c-.52-.3-.98-.26-1.26.04l7.78 7.78L15 8.53z" fill="#6FCF97"/>
+          </svg>
+          <span class="btn-store-label">
+            <small>Disponible sur</small>
+            <strong>Google Play</strong>
+          </span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Phone mockup -->
+    <div class="hero-visual reveal reveal-delay-2">
+      <div class="hero-phone-frame" role="img" aria-label="Aperçu de l'application Planika">
+        <div class="phone-screen">
+          <div class="phone-statusbar">
+            <span>9:41</span>
+            <span>●●●</span>
+          </div>
+          <div class="phone-content">
+            <div class="phone-app-title">Mon Terrarium</div>
+            <!-- Terramorphe SVG -->
+            <div class="phone-monster-area">
+              <svg class="terra-svg" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <!-- Pot -->
+                <ellipse cx="60" cy="102" rx="26" ry="8" fill="#C4553F" opacity="0.6"/>
+                <path d="M42 78 L78 78 L72 108 L48 108 Z" fill="#E2725B"/>
+                <rect x="38" y="73" width="44" height="8" rx="4" fill="#C4553F"/>
+                <!-- Terre -->
+                <ellipse cx="60" cy="73" rx="22" ry="7" fill="#5F7A61"/>
+                <!-- Tige principale -->
+                <path d="M60 72 Q58 55 56 40 Q54 28 60 22" stroke="#5F7A61" stroke-width="4" stroke-linecap="round" fill="none"/>
+                <!-- Feuille gauche 1 -->
+                <path d="M58 55 Q40 48 36 38 Q42 34 56 44 Z" fill="#8AAD8C"/>
+                <!-- Feuille droite 1 -->
+                <path d="M57 48 Q75 40 80 30 Q74 28 60 40 Z" fill="#5F7A61"/>
+                <!-- Feuille gauche 2 -->
+                <path d="M57 38 Q42 28 40 18 Q48 17 58 32 Z" fill="#8AAD8C" opacity="0.85"/>
+                <!-- Feuille top -->
+                <path d="M60 25 Q50 12 52 4 Q62 8 62 22 Z" fill="#5F7A61"/>
+                <path d="M60 25 Q70 10 72 2 Q62 6 60 22 Z" fill="#8AAD8C" opacity="0.8"/>
+                <!-- Yeux -->
+                <circle cx="55" cy="36" r="3.5" fill="#FFF9F0"/>
+                <circle cx="65" cy="34" r="3.5" fill="#FFF9F0"/>
+                <circle cx="55.8" cy="36.5" r="1.5" fill="#2A2118"/>
+                <circle cx="65.8" cy="34.5" r="1.5" fill="#2A2118"/>
+                <!-- Petite bouche souriante -->
+                <path d="M57 42 Q60 45 63 42" stroke="#2A2118" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                <!-- Petites branches secondaires -->
+                <path d="M56 62 Q46 58 44 52" stroke="#8AAD8C" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                <ellipse cx="43" cy="50" rx="5" ry="7" fill="#8AAD8C" transform="rotate(-30 43 50)"/>
+                <path d="M58 68 Q70 63 73 57" stroke="#5F7A61" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                <ellipse cx="75" cy="55" rx="5" ry="7" fill="#5F7A61" transform="rotate(25 75 55)"/>
+                <!-- Luciole / étincelle -->
+                <circle cx="82" cy="32" r="2.5" fill="#E2725B" opacity="0.8">
+                  <animate attributeName="opacity" values="0.8;0.2;0.8" dur="2.1s" repeatCount="indefinite"/>
+                </circle>
+                <circle cx="36" cy="44" r="2" fill="#FFF9F0" opacity="0.6">
+                  <animate attributeName="opacity" values="0.6;0.1;0.6" dur="3s" repeatCount="indefinite"/>
+                </circle>
+              </svg>
+              <div class="phone-soil"></div>
+            </div>
+            <div style="width:100%">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <span style="font-size:0.58rem;color:var(--ink-soft);font-weight:500;">Niveau 4 · 68 XP</span>
+                <span style="font-size:0.58rem;color:var(--sage);font-weight:600;">🔥 12 jours</span>
+              </div>
+              <div class="phone-xp-bar">
+                <div class="phone-xp-fill"></div>
+              </div>
+            </div>
+            <div class="phone-stats">
+              <div class="phone-stat"><strong>💧</strong>Hydraté</div>
+              <div class="phone-stat"><strong>🌙</strong>Reposé</div>
+              <div class="phone-stat"><strong>🥗</strong>Nourri</div>
+            </div>
+          </div>
+          <div class="phone-nav">
+            <div class="phone-nav-item">
+              <span class="phone-nav-icon">🏠</span>
+              <span>Accueil</span>
+            </div>
+            <div class="phone-nav-item">
+              <span class="phone-nav-icon">🗓</span>
+              <span>Cycle</span>
+            </div>
+            <div class="phone-nav-item active">
+              <span class="phone-nav-icon">🌿</span>
+              <span>Terrarium</span>
+            </div>
+            <div class="phone-nav-item">
+              <span class="phone-nav-icon">📖</span>
+              <span>Grimoire</span>
+            </div>
+            <div class="phone-nav-item">
+              <span class="phone-nav-icon">🌅</span>
+              <span>Réveil</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating cards -->
+      <div class="hero-float-card float-card-1">
+        <div class="float-icon float-sage">🔥</div>
+        <div>
+          <div style="font-size:0.75rem;color:var(--ink-soft);font-weight:400;">Série active</div>
+          <div style="font-weight:600;">12 jours</div>
+        </div>
+      </div>
+      <div class="hero-float-card float-card-2">
+        <div class="float-icon float-terra">🌺</div>
+        <div>
+          <div style="font-size:0.75rem;color:var(--ink-soft);font-weight:400;">Votre compagnon</div>
+          <div style="font-weight:600;">Floraison ✨</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── Modules Section ─────────────────────────────────────────────────────── -->
+  <section class="features-section" id="modules">
+    <div class="section-inner">
+      <div class="features-header">
+        <p class="section-eyebrow reveal">Les fonctionnalités</p>
+        <h2 class="section-title reveal reveal-delay-1">Tout ce dont vous avez<br>besoin, réuni en un seul endroit.</h2>
+        <p class="section-sub reveal reveal-delay-2">Trois modules pensés pour s'intégrer naturellement à votre quotidien, sans friction, sans jugement.</p>
+      </div>
+
+      <div class="features-grid">
+
+        <!-- Card 1: Cycle & Symptômes -->
+        <div class="feature-card reveal">
+          <div class="feature-icon-wrap fi-terra">🌸</div>
+          <h3 class="feature-card-title">Suivi du cycle & journal des symptômes</h3>
+          <p class="feature-card-desc">
+            Visualisez vos phases (menstruation, folliculaire, ovulation, lutéale), notez vos humeurs et symptômes jour après jour. Des rappels doux, jamais intrusifs, pour que vous restiez à l'écoute de votre corps.
+          </p>
+          <div class="feature-card-tags">
+            <span class="feature-tag tag-terra">Cycle féminin</span>
+            <span class="feature-tag tag-ink">Journal d'humeur</span>
+            <span class="feature-tag tag-terra">Rappels</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Grimoire Cuisine -->
+        <div class="feature-card reveal reveal-delay-1">
+          <div class="feature-icon-wrap fi-sage">📖</div>
+          <h3 class="feature-card-title">Le Grimoire — Cuisine saine</h3>
+          <p class="feature-card-desc">
+            Votre carnet de recettes personnel, organisé comme un vrai grimoire. Sauvegardez vos plats préférés, gérez vos listes de courses et laissez-vous inspirer par des idées adaptées à chaque phase de votre cycle.
+          </p>
+          <div class="feature-card-tags">
+            <span class="feature-tag tag-sage">Recettes</span>
+            <span class="feature-tag tag-ink">Liste de courses</span>
+            <span class="feature-tag tag-sage">Nutrition</span>
+          </div>
+        </div>
+
+        <!-- Card 3: Réveil progressif -->
+        <div class="feature-card reveal reveal-delay-2">
+          <div class="feature-icon-wrap fi-cream">🌅</div>
+          <h3 class="feature-card-title">Réveil progressif</h3>
+          <p class="feature-card-desc">
+            Finis les réveils en sursaut. Le module de réveil progressif vous sort du sommeil en douceur grâce à une montée en luminosité et un son naturel. Chaque matin réussi nourrit votre Terramorphe.
+          </p>
+          <div class="feature-card-tags">
+            <span class="feature-tag tag-ink">Sommeil</span>
+            <span class="feature-tag tag-terra">Éveil doux</span>
+            <span class="feature-tag tag-ink">Bien-être</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Evolution Strip ─────────────────────────────────────────────────────── -->
+  <div class="evolution-strip">
+    <div class="evolution-inner">
+      <p class="evolution-title reveal">L'évolution du Terramorphe — de la graine à la floraison</p>
+      <div class="evolution-stages reveal reveal-delay-1">
+        <div class="evo-stage">
+          <div class="evo-plant" title="Stade 1 : La graine">🌰</div>
+          <span class="evo-label">La Graine</span>
+        </div>
+        <span class="evo-arrow" aria-hidden="true">→</span>
+        <div class="evo-stage">
+          <div class="evo-plant" title="Stade 2 : La pousse">🌱</div>
+          <span class="evo-label">La Pousse</span>
+        </div>
+        <span class="evo-arrow" aria-hidden="true">→</span>
+        <div class="evo-stage highlighted">
+          <div class="evo-plant" title="Stade 3 : La plante (stade actuel)">🪴</div>
+          <span class="evo-label">La Plante</span>
+        </div>
+        <span class="evo-arrow" aria-hidden="true">→</span>
+        <div class="evo-stage">
+          <div class="evo-plant" title="Stade 4 : La floraison">🌺</div>
+          <span class="evo-label">La Floraison</span>
+        </div>
+        <span class="evo-arrow" aria-hidden="true">→</span>
+        <div class="evo-stage">
+          <div class="evo-plant" title="Stade 5 : Le Terramorphe accompli">🌳</div>
+          <span class="evo-label">Le Grand Terramorphe</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Terramorphe Section ─────────────────────────────────────────────────── -->
+  <section class="terra-section" id="terramorphe">
+    <div class="terra-inner">
+      <div class="terra-visual reveal-left">
+        <div class="terra-creature-container">
+          <div class="terra-glow"></div>
+          <!-- Large Terramorphe SVG -->
+          <svg viewBox="0 0 300 340" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;max-width:340px;" aria-label="Illustration du Terramorphe, compagnon végétal de Planika" role="img">
+            <!-- Pot ombre -->
+            <ellipse cx="150" cy="312" rx="70" ry="18" fill="#1A1209" opacity="0.4"/>
+            <!-- Pot -->
+            <path d="M108 248 L192 248 L178 300 L122 300 Z" fill="#E2725B"/>
+            <rect x="100" y="236" width="100" height="18" rx="9" fill="#C4553F"/>
+            <!-- Rim detail -->
+            <rect x="104" y="239" width="92" height="6" rx="3" fill="#D46347" opacity="0.6"/>
+            <!-- Terre -->
+            <ellipse cx="150" cy="236" rx="50" ry="16" fill="#5F7A61"/>
+            <ellipse cx="150" cy="232" rx="44" ry="10" fill="#3E5740"/>
+            <!-- Tige principale -->
+            <path d="M150 230 Q146 195 140 160 Q134 125 142 90 Q148 65 150 48" stroke="#5F7A61" stroke-width="10" stroke-linecap="round" fill="none"/>
+            <!-- Racines visibles -->
+            <path d="M148 228 Q132 234 125 246" stroke="#3E5740" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.6"/>
+            <path d="M152 228 Q168 234 176 244" stroke="#3E5740" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.6"/>
+            <!-- Feuille gauche grande -->
+            <path d="M143 180 Q100 165 88 140 Q100 128 140 152 Z" fill="#8AAD8C"/>
+            <!-- Feuille droite grande -->
+            <path d="M145 160 Q195 140 210 115 Q195 106 148 138 Z" fill="#5F7A61"/>
+            <!-- Feuille gauche milieu -->
+            <path d="M142 140 Q105 120 100 95 Q115 88 144 120 Z" fill="#8AAD8C" opacity="0.9"/>
+            <!-- Feuille droite milieu -->
+            <path d="M145 125 Q188 105 198 82 Q182 76 148 108 Z" fill="#5F7A61" opacity="0.9"/>
+            <!-- Petites feuilles haut -->
+            <path d="M148 90 Q122 68 128 48 Q144 50 150 78 Z" fill="#8AAD8C"/>
+            <path d="M150 82 Q178 58 176 38 Q160 40 150 68 Z" fill="#5F7A61"/>
+            <!-- Tête / Visage zone -->
+            <ellipse cx="150" cy="108" rx="28" ry="32" fill="none"/>
+            <!-- Yeux -->
+            <circle cx="138" cy="102" r="9" fill="#FFF9F0"/>
+            <circle cx="162" cy="98" r="9" fill="#FFF9F0"/>
+            <circle cx="139.5" cy="103.5" r="4" fill="#2A2118"/>
+            <circle cx="163.5" cy="99.5" r="4" fill="#2A2118"/>
+            <!-- Reflets yeux -->
+            <circle cx="141" cy="101.5" r="1.5" fill="#FFF9F0" opacity="0.9"/>
+            <circle cx="165" cy="97.5" r="1.5" fill="#FFF9F0" opacity="0.9"/>
+            <!-- Sourcils légers -->
+            <path d="M132 94 Q138 90 144 93" stroke="#3E5740" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.6"/>
+            <path d="M156 90 Q162 86 168 89" stroke="#3E5740" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.6"/>
+            <!-- Bouche souriante -->
+            <path d="M142 118 Q150 126 158 118" stroke="#2A2118" stroke-width="3" stroke-linecap="round" fill="none"/>
+            <!-- Petites joues -->
+            <ellipse cx="132" cy="114" rx="7" ry="5" fill="#E2725B" opacity="0.25"/>
+            <ellipse cx="168" cy="110" rx="7" ry="5" fill="#E2725B" opacity="0.25"/>
+            <!-- Branches secondaires avec mini feuilles -->
+            <path d="M140 200 Q118 194 110 185" stroke="#8AAD8C" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <ellipse cx="107" cy="181" rx="12" ry="18" fill="#8AAD8C" transform="rotate(-35 107 181)"/>
+            <path d="M146 215 Q172 208 180 200" stroke="#5F7A61" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <ellipse cx="183" cy="196" rx="12" ry="18" fill="#5F7A61" transform="rotate(30 183 196)"/>
+            <!-- Petites lucioles animées -->
+            <circle cx="212" cy="88" r="5" fill="#FFF9F0" opacity="0.8">
+              <animate attributeName="opacity" values="0.8;0.1;0.8" dur="2.5s" repeatCount="indefinite"/>
+              <animate attributeName="r" values="5;3;5" dur="2.5s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="85" cy="120" r="4" fill="#E2725B" opacity="0.7">
+              <animate attributeName="opacity" values="0.7;0.15;0.7" dur="3.2s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="228" cy="150" r="3.5" fill="#8AAD8C" opacity="0.6">
+              <animate attributeName="opacity" values="0.6;0.1;0.6" dur="1.9s" repeatCount="indefinite"/>
+            </circle>
+            <circle cx="80" cy="175" r="3" fill="#FFF9F0" opacity="0.5">
+              <animate attributeName="opacity" values="0.5;0.1;0.5" dur="4s" repeatCount="indefinite"/>
+            </circle>
+            <!-- Taches décoratives sur feuilles -->
+            <circle cx="105" cy="148" r="3" fill="#FFF9F0" opacity="0.2"/>
+            <circle cx="198" cy="118" r="2.5" fill="#FFF9F0" opacity="0.2"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="terra-content reveal-right">
+        <p class="section-eyebrow">Le Coin du Terramorphe</p>
+        <h2 class="section-title">Votre santé fait<br>grandir votre plante.</h2>
+        <p class="section-sub">Le Terramorphe est votre compagnon végétal virtuel, unique et évolutif. Il ne grandit pas tout seul — c'est votre bien-être qui l'alimente. Plus vous prenez soin de vous, plus il s'épanouit.</p>
+
+        <div class="terra-steps">
+          <div class="terra-step">
+            <div class="terra-step-icon">💧</div>
+            <div class="terra-step-text">
+              <strong>Boire de l'eau</strong>
+              <p>Cochez vos verres d'eau quotidiens. Le Terramorphe adore l'hydratation — ses feuilles brillent davantage.</p>
+            </div>
+          </div>
+          <div class="terra-step">
+            <div class="terra-step-icon">🌙</div>
+            <div class="terra-step-text">
+              <strong>Bien dormir</strong>
+              <p>Un réveil progressif réussi lui accorde de nouvelles branches. Le sommeil est son engrais préféré.</p>
+            </div>
+          </div>
+          <div class="terra-step">
+            <div class="terra-step-icon">🥗</div>
+            <div class="terra-step-text">
+              <strong>Cuisiner sainement</strong>
+              <p>Chaque recette préparée depuis le Grimoire lui offre une luciole lumineuse et de l'XP supplémentaire.</p>
+            </div>
+          </div>
+          <div class="terra-step">
+            <div class="terra-step-icon">🔥</div>
+            <div class="terra-step-text">
+              <strong>Tenir votre série</strong>
+              <p>Revenez chaque jour pour maintenir votre flamme. Les séries longues débloquent des formes rares du Terramorphe.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Download CTA ────────────────────────────────────────────────────────── -->
+  <section class="cta-section" id="telechargement">
+    <div class="cta-inner">
+      <p class="section-eyebrow reveal" style="color:rgba(255,255,255,0.6);justify-content:center;">Disponible dès maintenant</p>
+      <h2 class="section-title reveal reveal-delay-1">Prêt·e à rencontrer<br>votre Terramorphe ?</h2>
+      <p class="section-sub reveal reveal-delay-2" style="margin:0 auto 40px;">Téléchargez Planika gratuitement sur iOS et Android. Votre compagnon végétal n'attend que vous.</p>
+      <div class="cta-buttons reveal reveal-delay-3">
+        <a href="#" class="btn-store cta-btn-apple" role="button" aria-label="Télécharger Planika sur l'App Store">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+            <path d="M16.115 11.695c-.02-2.274 1.86-3.378 1.944-3.432-1.062-1.551-2.712-1.763-3.295-1.786-1.398-.142-2.737.828-3.448.828-.71 0-1.804-.808-2.97-.786-1.524.022-2.934.888-3.718 2.252-1.59 2.754-.408 6.826 1.137 9.061.757 1.089 1.657 2.313 2.836 2.27 1.14-.045 1.568-.734 2.947-.734 1.378 0 1.773.734 2.977.712 1.225-.02 1.997-1.107 2.748-2.2.866-1.258 1.222-2.483 1.24-2.546-.027-.012-2.374-.91-2.398-3.639z" fill="currentColor"/>
+            <path d="M13.99 4.856c.63-.763 1.055-1.822.938-2.876-.908.037-2.007.604-2.658 1.367-.584.674-1.096 1.753-.959 2.786 1.012.079 2.048-.514 2.679-1.277z" fill="currentColor"/>
+          </svg>
+          <span class="btn-store-label">
+            <small>Télécharger dans</small>
+            <strong>l'App Store</strong>
+          </span>
+        </a>
+        <a href="#" class="btn-store cta-btn-google" role="button" aria-label="Télécharger Planika sur Google Play">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+            <path d="M4.6 2.5c-.34.36-.54.91-.54 1.62v13.76c0 .71.2 1.26.54 1.62l.08.08 7.7-7.7v-.18L4.68 2.42l-.08.08z" fill="#4FC3F7"/>
+            <path d="M14.94 13.44l-2.56-2.56v-.18l2.56-2.56.06.03 3.03 1.72c.87.49.87 1.3 0 1.8l-3.03 1.72-.06.03z" fill="#FFCA28"/>
+            <path d="M15 13.47L12.38 10.84 4.6 18.62c.28.3.74.34 1.26.04L15 13.47z" fill="#F06292"/>
+            <path d="M15 8.53L5.86 3.34c-.52-.3-.98-.26-1.26.04l7.78 7.78L15 8.53z" fill="#6FCF97"/>
+          </svg>
+          <span class="btn-store-label">
+            <small>Disponible sur</small>
+            <strong>Google Play</strong>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── Footer ──────────────────────────────────────────────────────────────── -->
+  <footer class="footer" id="contact">
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="footer-brand-name">🌿 Planika</div>
+          <p class="footer-brand-desc">L'application bien-être qui fait grandir votre compagnon végétal à mesure que vous prenez soin de vous.</p>
+          <a href="mailto:contact@planika.com" class="footer-contact-link" aria-label="Envoyer un email à contact@planika.com">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <rect x="1" y="3" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M1 5l7 5 7-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            contact@planika.com
+          </a>
+        </div>
+
+        <div>
+          <p class="footer-col-title">L'application</p>
+          <ul class="footer-col-links" role="list">
+            <li><a href="#modules">Fonctionnalités</a></li>
+            <li><a href="#terramorphe">Le Terramorphe</a></li>
+            <li><a href="#telechargement">Télécharger</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <p class="footer-col-title">Légal & Contact</p>
+          <ul class="footer-col-links" role="list">
+            <li><a href="#" onclick="return false;" aria-label="Politique de confidentialité">Politique de confidentialité</a></li>
+            <li><a href="#" onclick="return false;" aria-label="Conditions d'utilisation">Conditions d'utilisation</a></li>
+            <li><a href="#" onclick="return false;" aria-label="Mentions légales">Mentions légales</a></li>
+            <li><a href="mailto:contact@planika.com">Nous contacter</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="footer-legal">
+          &copy; 2025 Planika. Tous droits réservés. &nbsp;·&nbsp;
+          <a href="#" onclick="return false;">Mentions légales</a> &nbsp;·&nbsp;
+          <a href="#" onclick="return false;">Confidentialité</a>
+        </p>
+        <p class="footer-made">
+          Fait avec <span>♥</span> et beaucoup de plantes
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ─── JavaScript ───────────────────────────────────────────────────────────── -->
+  <script>
+    // ── Scroll-triggered reveal ──────────────────────────────────────────────
+    const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+    );
+    revealEls.forEach(el => observer.observe(el));
+
+    // ── Nav scroll state ─────────────────────────────────────────────────────
+    const nav = document.getElementById('mainNav');
+    const onScroll = () => {
+      nav.classList.toggle('scrolled', window.scrollY > 20);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // ── Mobile burger ────────────────────────────────────────────────────────
+    const burger = document.getElementById('burgerBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    burger.addEventListener('click', () => {
+      const isOpen = mobileMenu.classList.toggle('open');
+      burger.classList.toggle('open', isOpen);
+      burger.setAttribute('aria-expanded', isOpen);
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+    // Close on link click
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        burger.classList.remove('open');
+        burger.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+      });
+    });
+
+    // ── Smooth focus ring only on keyboard nav ───────────────────────────────
+    document.addEventListener('mousedown', () => document.body.classList.add('using-mouse'));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') document.body.classList.remove('using-mouse');
+    });
+
+    // ── Reveal hero immediately on load ─────────────────────────────────────
+    window.addEventListener('load', () => {
+      document.querySelectorAll('.hero .reveal').forEach(el => {
+        setTimeout(() => el.classList.add('visible'), 100);
+      });
+    });
+  </script>
+
+</body>
+</html>
