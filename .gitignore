@@ -1,0 +1,19 @@
+# Fichiers système
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Fichiers de configuration d'éditeurs de code
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Fichiers de logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
