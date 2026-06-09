@@ -1,19 +1,25 @@
-# Fichiers système
-.DS_Store
-Thumbs.db
-Desktop.ini
+# Fichiers de configuration Secrets (NE JAMAIS ENVOYER)
+.env
+.env.local
+.env.*.local
 
-# Fichiers de configuration d'éditeurs de code
-.vscode/
-.idea/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.swp
+# Dossiers temporaires de l'application & Lovable
+.lovable/
+.tanstack/
+.vite/
+node_modules/
+dist/
 
-# Fichiers de logs
-*.log
+# Fichiers de verrous de paquets
+package-lock.json
+bun.lock
+
+# Logs de crash et de debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.pnpm-debug.log*
+
+# Fichiers système (Mac / Windows)
+.DS_Store
+Thumbs.db
